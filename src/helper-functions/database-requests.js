@@ -72,3 +72,16 @@ export const emailVerification = () => {
       },
   })
 }
+
+export const passwordReset = (email) => {
+  return fetch('https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyBaMjEyYa1-VQ3dRX6GfB9u_vd7uM8God4', {
+    method: "POST",
+      body: JSON.stringify({
+        requestType: 'PASSWORD_RESET',
+        email: email,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+  })
+}

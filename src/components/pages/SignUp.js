@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from "react";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import {
   Button,
   Card,
@@ -9,13 +9,13 @@ import {
   Form,
 } from "react-bootstrap";
 import {
+  passwordReset,
   userLogin,
   userSignUp,
 } from "../../helper-functions/database-requests";
 import AuthContext from "../../store/auth-context";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { toast, ToastContainer } from "react-toastify";
-
 
 const SignUp = (props) => {
   const history = useHistory();
@@ -49,11 +49,11 @@ const SignUp = (props) => {
           }
         })
         .then((data) => {
-          toast.success('successfully logged In', {
+          toast.success("successfully logged In", {
             position: toast.POSITION.TOP_RIGHT,
           });
           authCtx.login(data.idToken);
-          history.replace('/home');
+          history.replace("/home");
           emailInputRef.current.value = "";
           passwordInputRef.current.value = "";
         })
@@ -84,6 +84,33 @@ const SignUp = (props) => {
     }
   };
 
+  const passwordResetHandler = (e) => {
+    e.preventDefault();
+
+    const enteredEmailInput = emailInputRef.current.value;
+    if (enteredEmailInput.length === 0) {
+      alert("Please enter valid email to get password reset link");
+    } else {
+      passwordReset(enteredEmailInput)
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          } else {
+            return res.json().then((data) => {
+              let errorMessage = "password reset failed";
+              throw new Error(errorMessage);
+            });
+          }
+        })
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((err) => {
+          alert(err.message);
+        });
+    }
+  };
+
   return (
     <>
       <Container className="mt-5">
@@ -100,7 +127,12 @@ const SignUp = (props) => {
                 <Form.Control type="password" ref={passwordInputRef} />
               </FloatingLabel>
               <div className="d-flex justify-content-center align-items-center">
-                <Button style={{width: "100vw"}} className="float-end" type="submit" variant="warning">
+                <Button
+                  style={{ width: "100vw" }}
+                  className="float-end"
+                  type="submit"
+                  variant="warning"
+                >
                   {isLogin ? "Login" : "SignUp"}
                 </Button>
               </div>
@@ -108,6 +140,11 @@ const SignUp = (props) => {
           </Card.Body>
           <CardFooter>
             <div className="d-flex justify-content-center align-items-center">
+              <a href="#forgotPassword" onClick={passwordResetHandler}>
+                Forgot Password?
+              </a>
+            </div>
+            <div className="p-2 d-flex justify-content-center align-items-center">
               <Button onClick={switchAuthModeHandler}>
                 {isLogin
                   ? "Don't have an account? Signup"
