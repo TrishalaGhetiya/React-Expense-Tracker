@@ -11,7 +11,7 @@ import {
 import {
   userLogin,
   userSignUp,
-} from "../../helper-functions/database-requesta";
+} from "../../helper-functions/database-requests";
 import AuthContext from "../../store/auth-context";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { toast, ToastContainer } from "react-toastify";
