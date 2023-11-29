@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export const userSignUp = (email, password) => {
   return fetch(
     "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBaMjEyYa1-VQ3dRX6GfB9u_vd7uM8God4",
@@ -84,4 +86,12 @@ export const passwordReset = (email) => {
         "Content-Type": "application/json",
       },
   })
+}
+
+export const getExpenses = () => {
+  return axios.get('https://react-http-ff156-default-rtdb.firebaseio.com/expenses');
+}
+
+export const addExpense = (expense) => {
+  return axios.post('https://react-http-ff156-default-rtdb.firebaseio.com/expenses', expense);
 }

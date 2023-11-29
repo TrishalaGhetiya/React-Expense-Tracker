@@ -1,6 +1,5 @@
-import React from "react";
-import { useRef } from "react";
-import { useState } from "react";
+import React, { useRef, useState } from "react";
+import {useHistory} from 'react-router-dom';
 import {
   Button,
   Collapse,
@@ -8,24 +7,31 @@ import {
   FloatingLabel,
   Form,
 } from "react-bootstrap";
+import { addExpense } from "../../helper-functions/database-requests";
 
-const AddExpense = props => {
-    const [open, setOpen] = useState(false);
+const AddExpense = (props) => {
+    const history = useHistory();
+  const [open, setOpen] = useState(false);
 
   const amountInputRef = useRef();
   const descriptionInputRef = useRef();
   const categoryInputRef = useRef();
 
-  const addExpenseHandler = e => {
+  const addExpenseHandler = (e) => {
     e.preventDefault();
+      const enteredAmount = amountInputRef.current.value;
+      const enteredDescription = descriptionInputRef.current.value;
+      const enteredCategory = categoryInputRef.current.value;
 
-    const enteredAmount = amountInputRef.current.value;
-    const enteredDescription = descriptionInputRef.current.value;
-    const enteredCategory = categoryInputRef.current.value;
+      const expense = {
+        amount: enteredAmount,
+        description: enteredDescription,
+        category: enteredCategory,
+      };
 
-    props.onAddExpense(enteredAmount,enteredDescription, enteredCategory);
-
-  }
+      props.onAddExpense(expense);
+      
+  };
 
   return (
     <>
