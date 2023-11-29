@@ -1,11 +1,38 @@
 import React from "react";
 import { useRef } from "react";
 import { Button, Card, Container, FloatingLabel, Form } from "react-bootstrap";
-import { userUpdateProfile } from "../../helper-functions/database-requesta";
+import {
+  getUserData,
+  userUpdateProfile,
+} from "../../helper-functions/database-requesta";
+import { useEffect } from "react";
+
 
 const CompleteProfile = (props) => {
   const nameInputRef = useRef();
   const photoInputref = useRef();
+
+  useEffect(() => {
+    getUserData()
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          return res.json().then((data) => {
+            let errorMessage = "No Data Found";
+            throw new Error(errorMessage);
+          });
+        }
+      })
+      .then((data) => {
+        console.log(data.users);
+        nameInputRef.current.value = data.users[0].displayName;
+        photoInputref.current.value = data.users[0].photoUrl;
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
+  }, []);
 
   const formSubmitHandler = (e) => {
     e.preventDefault();
