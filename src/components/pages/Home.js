@@ -34,8 +34,8 @@ const Home = (props) => {
   }, []);
 
   const addExpenseHandler = async (expense) => {
-    try{
-    const response = await fetch(
+    try {
+      const response = await fetch(
         "https://react-http-ff156-default-rtdb.firebaseio.com/expenses.json",
         {
           method: "POST",
@@ -52,10 +52,49 @@ const Home = (props) => {
     }
   };
 
+  const deleteExpenseHandler = async (id) => {
+    try {
+      const response = await fetch(
+        `https://react-http-ff156-default-rtdb.firebaseio.com/expenses/${id}.json`,
+        {
+          method: "DELETE",
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const editExpenseHandler = async (expense) => {
+
+    try {
+      const response = await fetch(
+        `https://react-http-ff156-default-rtdb.firebaseio.com/expenses/${expense.id}.json`,
+        {
+          method: "PUT",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(expense)
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <>
       <AddExpense onAddExpense={addExpenseHandler} />
-      <ExpenseList expenses={expenseList} />
+      <ExpenseList
+        expenses={expenseList}
+        onDelete={deleteExpenseHandler}
+        onEdit={editExpenseHandler}
+      />
     </>
   );
 };

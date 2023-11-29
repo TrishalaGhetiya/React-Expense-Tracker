@@ -88,10 +88,3 @@ export const passwordReset = (email) => {
   })
 }
 
-export const getExpenses = () => {
-  return axios.get('https://react-http-ff156-default-rtdb.firebaseio.com/expenses');
-}
-
-export const addExpense = (expense) => {
-  return axios.post('https://react-http-ff156-default-rtdb.firebaseio.com/expenses', expense);
-}
