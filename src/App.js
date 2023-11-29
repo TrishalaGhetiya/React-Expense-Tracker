@@ -1,17 +1,26 @@
 import React from "react";
-import Header from "./components/Layout/Header";
 import SignUp from "./components/pages/SignUp";
+import Layout from "./components/Layout/Layout";
+import { Switch } from "react-router-dom/cjs/react-router-dom.min";
+import { Route } from "react-router-dom/cjs/react-router-dom";
+import Home from "./components/pages/Home";
+import CompleteProfile from "./components/pages/CompleteProfile";
 
 function App() {
   return (
-    <div style={{
-      backgroundImage: "url(background-Image.jpg)",
-      height: "100vh",
-      backgroundSize: "cover",
-    }}>
-      <Header />
-      <SignUp />
-    </div>
+    <Layout>
+      <Switch>
+        <Route path="/" exact>
+          <SignUp />
+        </Route>
+        <Route path="/home">
+          <Home />
+        </Route>
+        <Route path="/completeProfile">
+          <CompleteProfile />
+        </Route>
+      </Switch>
+    </Layout>
   );
 }
 

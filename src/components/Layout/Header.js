@@ -1,22 +1,28 @@
-import React from "react";
-import { Navbar, Nav, Container } from "react-bootstrap";
+import React, { useState } from "react";
+import { Navbar, Container, Button } from "react-bootstrap";
+import Notifications from "./Notifications";
 
 const Header = (props) => {
+const [IsNotificationShown, setIsNotificationShown] = useState(false);
+
+const showNotificationHandler = () => {
+  setIsNotificationShown(true);
+}
+
+const hideNotificationHandler = () => {
+  setIsNotificationShown(false);
+}
+
   return (
-    <div
-      
-    >
+    <header style={{width: "100%"}}>
       <Navbar bg="light" data-bs-theme="light">
         <Container>
-          <Navbar.Brand href="#home">Expense Tracker</Navbar.Brand>
-          <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#features">Products</Nav.Link>
-            <Nav.Link href="#pricing">About Us</Nav.Link>
-          </Nav>
+          <Navbar.Brand href="/home">Expense Tracker</Navbar.Brand>
+          <Button onClick={showNotificationHandler} className="rounded-circle">N</Button>
         </Container>
       </Navbar>
-    </div>
+      {IsNotificationShown && <Notifications show={IsNotificationShown} onHide={hideNotificationHandler} />}
+    </header>
   );
 };
 

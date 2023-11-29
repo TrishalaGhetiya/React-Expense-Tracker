@@ -1,4 +1,5 @@
 import React, { useContext, useRef, useState } from "react";
+import 'react-toastify/dist/ReactToastify.css';
 import {
   Button,
   Card,
@@ -12,8 +13,12 @@ import {
   userSignUp,
 } from "../../helper-functions/database-requesta";
 import AuthContext from "../../store/auth-context";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { toast, ToastContainer } from "react-toastify";
+
 
 const SignUp = (props) => {
+  const history = useHistory();
   const [isLogin, setIsLogin] = useState(true);
 
   const emailInputRef = useRef();
@@ -44,7 +49,11 @@ const SignUp = (props) => {
           }
         })
         .then((data) => {
+          toast.success('successfully logged In', {
+            position: toast.POSITION.TOP_RIGHT,
+          });
           authCtx.login(data.idToken);
+          history.replace('/home');
           emailInputRef.current.value = "";
           passwordInputRef.current.value = "";
         })
@@ -91,7 +100,7 @@ const SignUp = (props) => {
                 <Form.Control type="password" ref={passwordInputRef} />
               </FloatingLabel>
               <div className="d-flex justify-content-center align-items-center">
-                <Button className="float-end" type="submit" variant="warning">
+                <Button style={{width: "100vw"}} className="float-end" type="submit" variant="warning">
                   {isLogin ? "Login" : "SignUp"}
                 </Button>
               </div>
@@ -108,6 +117,7 @@ const SignUp = (props) => {
           </CardFooter>
         </Card>
       </Container>
+      <ToastContainer />
     </>
   );
 };
