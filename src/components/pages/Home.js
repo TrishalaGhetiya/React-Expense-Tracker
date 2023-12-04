@@ -2,99 +2,113 @@ import React from "react";
 
 import ExpenseList from "../expenses/ExpenseList";
 import AddExpense from "../expenses/AddExpense";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useState, useRef} from "react";
+import {
+  addExpenses,
+  deleteExpense,
+  editExpense,
+  fetchExpenses,
+} from "../../store/expense-slice";
 
-const Home = (props) => {
-  const [expenseList, setExpenseList] = useState([]);
+import {
+  Button,
+  Card,
+  FloatingLabel,
+  Form,
+  Collapse,
+  Container,
+} from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+
+const Home = () => {
+  const expenses = useSelector((state) => state.expense.expenses);
+  const [open, setOpen] = useState(false);
+
+  const amountInputRef = useRef();
+  const descriptionInputRef = useRef();
+  const categoryInputRef = useRef();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch(
-          "https://react-http-ff156-default-rtdb.firebaseio.com/expenses.json"
-        );
-        const data = await response.json();
-        const loadedExpenses = [];
+    dispatch(fetchExpenses());
+  }, [dispatch]);
 
-        for (const key in data) {
-          loadedExpenses.push({
-            id: key,
-            amount: data[key].amount,
-            description: data[key].description,
-            category: data[key].category,
-          });
-        }
-        setExpenseList(loadedExpenses);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    fetchData();
-  }, []);
+  const addExpenseHandler = (e) => {
+    e.preventDefault();
+    const enteredAmount = amountInputRef.current.value;
+    const enteredDescription = descriptionInputRef.current.value;
+    const enteredCategory = categoryInputRef.current.value;
 
-  const addExpenseHandler = async (expense) => {
-    try {
-      const response = await fetch(
-        "https://react-http-ff156-default-rtdb.firebaseio.com/expenses.json",
-        {
-          method: "POST",
-          body: JSON.stringify(expense),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const data = await response.json();
-      console.log(data);
-    } catch (err) {
-      console.log(err);
-    }
+    const expense = {
+      amount: enteredAmount,
+      description: enteredDescription,
+      category: enteredCategory,
+    };
+
+    dispatch(addExpenses(expense));
   };
 
   const deleteExpenseHandler = async (id) => {
-    try {
-      const response = await fetch(
-        `https://react-http-ff156-default-rtdb.firebaseio.com/expenses/${id}.json`,
-        {
-          method: "DELETE",
-        }
-      );
-      const data = await response.json();
-      console.log(data);
-    } catch (err) {
-      console.log(err);
-    }
+    console.log(id);
+    dispatch(deleteExpense(id));
   };
 
   const editExpenseHandler = async (expense) => {
-
-    try {
-      const response = await fetch(
-        `https://react-http-ff156-default-rtdb.firebaseio.com/expenses/${expense.id}.json`,
-        {
-          method: "PUT",
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(expense)
-        }
-      );
-      const data = await response.json();
-      console.log(data);
-    } catch (err) {
-      console.log(err);
-    }
+    dispatch(deleteExpense(expense.id));
+    console.log(expense);
+    setOpen(true);
+    amountInputRef.current.value = expense.amount;
+    descriptionInputRef.current.value = expense.description;
+    categoryInputRef.current.value = expense.category;
   };
 
   return (
     <>
-      <AddExpense onAddExpense={addExpenseHandler} />
-      <ExpenseList
-        expenses={expenseList}
-        onDelete={deleteExpenseHandler}
-        onEdit={editExpenseHandler}
-      />
+      <Container>
+        <Button
+          onClick={() => setOpen(!open)}
+          aria-controls="expense-form"
+          aria-expanded={open}
+        >
+          {!open ? "Add Expense" : "Cancel"}
+        </Button>
+        <Collapse in={open}>
+          <Form id="expense-form" onSubmit={addExpenseHandler}>
+            <FloatingLabel label="Amount" className="mb-3">
+              <Form.Control type="text" ref={amountInputRef} />
+            </FloatingLabel>
+            <FloatingLabel label="Desciption" className="mb-3">
+              <Form.Control type="text" ref={descriptionInputRef} />
+            </FloatingLabel>
+            <Form.Select ref={categoryInputRef}>
+              <option>Select Category</option>
+              <option>Food</option>
+              <option>Health</option>
+              <option>Fun</option>
+              <option>Travel</option>
+              <option>Clothing</option>
+              <option>Cosmetics</option>
+              <option>Education</option>
+            </Form.Select>
+            <Button type="submit">Add Expense</Button>
+          </Form>
+        </Collapse>
+      </Container>
+      <Card>
+        <ul>
+          {expenses.map((expense) => (
+            <li key={expense.id}>
+              {expense.category} ({expense.description}) {expense.amount}
+              <Button onClick={() => editExpenseHandler(expense)}>
+                Edit
+              </Button>
+              <Button onClick={() => deleteExpenseHandler(expense.id)}>
+                Delete
+              </Button>
+            </li>
+          ))}
+        </ul>
+      </Card>
     </>
   );
 };

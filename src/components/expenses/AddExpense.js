@@ -1,5 +1,4 @@
 import React, { useRef, useState } from "react";
-import {useHistory} from 'react-router-dom';
 import {
   Button,
   Collapse,
@@ -7,10 +6,8 @@ import {
   FloatingLabel,
   Form,
 } from "react-bootstrap";
-import { addExpense } from "../../helper-functions/database-requests";
 
 const AddExpense = (props) => {
-    const history = useHistory();
   const [open, setOpen] = useState(false);
 
   const amountInputRef = useRef();
@@ -19,18 +16,17 @@ const AddExpense = (props) => {
 
   const addExpenseHandler = (e) => {
     e.preventDefault();
-      const enteredAmount = amountInputRef.current.value;
-      const enteredDescription = descriptionInputRef.current.value;
-      const enteredCategory = categoryInputRef.current.value;
+    const enteredAmount = amountInputRef.current.value;
+    const enteredDescription = descriptionInputRef.current.value;
+    const enteredCategory = categoryInputRef.current.value;
 
-      const expense = {
-        amount: enteredAmount,
-        description: enteredDescription,
-        category: enteredCategory,
-      };
+    const expense = {
+      amount: enteredAmount,
+      description: enteredDescription,
+      category: enteredCategory,
+    };
 
-      props.onAddExpense(expense);
-      
+    props.onAddExpense(expense);
   };
 
   return (
@@ -56,6 +52,10 @@ const AddExpense = (props) => {
               <option>Food</option>
               <option>Health</option>
               <option>Fun</option>
+              <option>Travel</option>
+              <option>Clothing</option>
+              <option>Cosmetics</option>
+              <option>Education</option>
             </Form.Select>
             <Button type="submit">Add Expense</Button>
           </Form>

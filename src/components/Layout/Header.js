@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { Navbar, Container, Button } from "react-bootstrap";
 import Notifications from "./Notifications";
-import { useContext } from "react";
-import AuthContext from "../../store/auth-context";
 import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { authActions } from "../../store/auth-slice";
 
-const Header = (props) => {
-  const authCtx = useContext(AuthContext);
+const Header = () => {
+  const dispatch = useDispatch();
+
+  const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
+  
   const history = useHistory();
 
   const [IsNotificationShown, setIsNotificationShown] = useState(false);
@@ -20,7 +23,7 @@ const Header = (props) => {
   };
 
   const logoutHandler = () => {
-    authCtx.logout();
+    dispatch(authActions.logout());
     history.replace('/');
   };
 
@@ -32,7 +35,7 @@ const Header = (props) => {
           <Button onClick={showNotificationHandler} className="rounded-circle">
             N
           </Button>
-          {authCtx.isLoggedIn && (
+          {isLoggedIn && (
             <Button onClick={logoutHandler}>Logout</Button>
           )}
         </Container>

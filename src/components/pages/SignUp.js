@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import {
   Button,
@@ -13,18 +13,19 @@ import {
   userLogin,
   userSignUp,
 } from "../../helper-functions/database-requests";
-import AuthContext from "../../store/auth-context";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { toast, ToastContainer } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { authActions } from "../../store/auth-slice";
 
-const SignUp = (props) => {
+const SignUp = () => {
+  const dispatch = useDispatch();
+
   const history = useHistory();
   const [isLogin, setIsLogin] = useState(true);
 
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
-
-  const authCtx = useContext(AuthContext);
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
@@ -52,7 +53,7 @@ const SignUp = (props) => {
           toast.success("successfully logged In", {
             position: toast.POSITION.TOP_RIGHT,
           });
-          authCtx.login(data.idToken);
+          dispatch(authActions.login(data.idToken));
           history.replace("/home");
           emailInputRef.current.value = "";
           passwordInputRef.current.value = "";
