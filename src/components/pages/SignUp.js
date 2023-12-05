@@ -16,7 +16,7 @@ import {
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { toast, ToastContainer } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { authActions } from "../../store/auth-slice";
+import { authActions } from "../../store/slices/auth-slice";
 
 const SignUp = () => {
   const dispatch = useDispatch();

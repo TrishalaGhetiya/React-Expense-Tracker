@@ -1,14 +1,6 @@
 import React from "react";
 
-import ExpenseList from "../expenses/ExpenseList";
-import AddExpense from "../expenses/AddExpense";
 import { useEffect, useState, useRef} from "react";
-import {
-  addExpenses,
-  deleteExpense,
-  editExpense,
-  fetchExpenses,
-} from "../../store/expense-slice";
 
 import {
   Button,
@@ -19,9 +11,16 @@ import {
   Container,
 } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import { fetchExpenseAction } from "../../store/actions/fetch-action";
+import { addExpenseAction } from "../../store/actions/add-action";
+import { deleteExpenseAction } from "../../store/actions/delete-action";
 
 const Home = () => {
+  const totalExpense = useSelector(state => state.expense.totalExpenses);
   const expenses = useSelector((state) => state.expense.expenses);
+ 
+  //console.log(expenses);
+
   const [open, setOpen] = useState(false);
 
   const amountInputRef = useRef();
@@ -30,10 +29,11 @@ const Home = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchExpenses());
+    dispatch(fetchExpenseAction());
+    
   }, [dispatch]);
 
-  const addExpenseHandler = (e) => {
+  const addExpenseHandler = async (e) => {
     e.preventDefault();
     const enteredAmount = amountInputRef.current.value;
     const enteredDescription = descriptionInputRef.current.value;
@@ -44,22 +44,27 @@ const Home = () => {
       description: enteredDescription,
       category: enteredCategory,
     };
+    console.log(expense);
 
-    dispatch(addExpenses(expense));
+    dispatch(addExpenseAction(expense));
+    //window.location.reload();
   };
 
   const deleteExpenseHandler = async (id) => {
     console.log(id);
-    dispatch(deleteExpense(id));
+    dispatch(deleteExpenseAction(id));
+    window.location.reload();
   };
 
   const editExpenseHandler = async (expense) => {
-    dispatch(deleteExpense(expense.id));
+
+    dispatch(deleteExpenseAction(expense.id));
     console.log(expense);
     setOpen(true);
     amountInputRef.current.value = expense.amount;
     descriptionInputRef.current.value = expense.description;
     categoryInputRef.current.value = expense.category;
+   // window.location.reload();
   };
 
   return (
@@ -109,6 +114,9 @@ const Home = () => {
           ))}
         </ul>
       </Card>
+      <div>
+        Total Expense: {totalExpense}
+      </div>
     </>
   );
 };
