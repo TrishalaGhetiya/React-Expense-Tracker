@@ -50,13 +50,12 @@ const SignUp = () => {
           }
         })
         .then((data) => {
+          console.log(data.displayName);
+          dispatch(authActions.login({token: data.idToken, userName: data.displayName}));
+          history.replace("/home");
           toast.success("successfully logged In", {
             position: toast.POSITION.TOP_RIGHT,
           });
-          dispatch(authActions.login(data.idToken));
-          history.replace("/home");
-          emailInputRef.current.value = "";
-          passwordInputRef.current.value = "";
         })
         .catch((err) => {
           alert(err.message);
@@ -68,6 +67,7 @@ const SignUp = () => {
             return res.json();
           } else {
             return res.json().then((data) => {
+              console.log(data.error.message);
               let errorMessage = "Authentication Failed";
               throw new Error(errorMessage);
             });
@@ -132,7 +132,7 @@ const SignUp = () => {
                   style={{ width: "100vw" }}
                   className="float-end"
                   type="submit"
-                  variant="warning"
+                  variant="dark"
                 >
                   {isLogin ? "Login" : "SignUp"}
                 </Button>
@@ -146,7 +146,7 @@ const SignUp = () => {
               </a>
             </div>
             <div className="p-2 d-flex justify-content-center align-items-center">
-              <Button onClick={switchAuthModeHandler}>
+              <Button variant="dark" onClick={switchAuthModeHandler}>
                 {isLogin
                   ? "Don't have an account? Signup"
                   : "Have an account? Login"}

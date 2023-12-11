@@ -1,6 +1,13 @@
 import React from "react";
 import { useRef } from "react";
-import { Badge, Button, Card, Container, FloatingLabel, Form } from "react-bootstrap";
+import {
+  Badge,
+  Button,
+  Card,
+  Container,
+  FloatingLabel,
+  Form,
+} from "react-bootstrap";
 import {
   emailVerification,
   getUserData,
@@ -8,10 +15,11 @@ import {
 } from "../../helper-functions/database-requests";
 import { useEffect } from "react";
 import { useState } from "react";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
-
-const CompleteProfile = (props) => {
-const [isEmailVerified, setIsEmailVerified] = useState(false);
+const CompleteProfile = () => {
+  const history = useHistory();
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
 
   const nameInputRef = useRef();
   const photoInputref = useRef();
@@ -31,7 +39,7 @@ const [isEmailVerified, setIsEmailVerified] = useState(false);
       })
       .then((data) => {
         console.log(data.users);
-        if(data.users[0].emailVerified === true){
+        if (data.users[0].emailVerified === true) {
           setIsEmailVerified(true);
         }
         nameInputRef.current.value = data.users[0].displayName;
@@ -43,27 +51,28 @@ const [isEmailVerified, setIsEmailVerified] = useState(false);
       });
   }, []);
 
-  const verifyEmailHandler = e => {
+  const verifyEmailHandler = (e) => {
     e.preventDefault();
 
-    emailVerification().then((res) => {
-      if (res.ok) {
-        return res.json();
-      } else {
-        return res.json().then((data) => {
-          let errorMessage = "email verification failed";
-          throw new Error(errorMessage);
-        });
-      }
-    })
-    .then((data) => {
-      console.log(data.email);
-      setIsEmailVerified(true);
-    })
-    .catch((err) => {
-      alert(err.message);
-    });
-  }
+    emailVerification()
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          return res.json().then((data) => {
+            let errorMessage = "email verification failed";
+            throw new Error(errorMessage);
+          });
+        }
+      })
+      .then((data) => {
+        console.log(data.email);
+        setIsEmailVerified(true);
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
+  };
 
   const formSubmitHandler = (e) => {
     e.preventDefault();
@@ -92,39 +101,64 @@ const [isEmailVerified, setIsEmailVerified] = useState(false);
       });
   };
 
+  const backToExpensePageHandler = () => {
+    history.replace("/home");
+  };
+
   return (
     <>
-      <Container className="p-3" fluid>
-        <h4>Update Profile</h4>
-        <Button variant="outline-danger">X</Button>
-        {isEmailVerified ? <Badge variant="success">Email Verified</Badge> : <Badge variant="danger">Not Verified</Badge>}
-        <Button onClick={verifyEmailHandler}>Verify Your Email</Button>
+      <Container className="mt-5">
+        <Card className="my-auto">
+          <Card.Body>
+            <Card.Title className="text-center">Update Profile</Card.Title>
+            <Button
+              style={{ marginBottom: 7 }}
+              onClick={backToExpensePageHandler}
+              variant="outline-danger"
+            >
+              Cancel
+            </Button>
+            {isEmailVerified ? (
+              <Badge variant="success">Email Verified</Badge>
+            ) : (
+              <Badge variant="danger">Not Verified</Badge>
+            )}
+            <Button
+              style={{
+                backgroundColor: "#445069",
+                border: 0,
+                position: "absolute",
+                right: 20,
+                marginBottom: 7,
+              }}
+              onClick={verifyEmailHandler}
+            >
+              Verify Your Email
+            </Button>
+            <Form onSubmit={formSubmitHandler}>
+              <FloatingLabel label="Email" className="mb-3">
+                <Form.Control type="email" ref={emailInputRef} disabled />
+              </FloatingLabel>
+              <FloatingLabel label="Full Name" className="mb-3">
+                <Form.Control type="text" ref={nameInputRef} />
+              </FloatingLabel>
+              <FloatingLabel label="Profile Photo URL" className="mb-3">
+                <Form.Control type="text" ref={photoInputref} />
+              </FloatingLabel>
+              <div className="d-flex justify-content-center align-items-center">
+                <Button
+                  style={{ width: "100vw" }}
+                  className="float-end"
+                  type="submit"
+                  variant="dark"
+                >
+                  Update Profile
+                </Button>
+              </div>
+            </Form>
+          </Card.Body>
+        </Card>
       </Container>
-      <Card className="my-auto" style={{ width: "18rem" }}>
-        <Card.Body>
-          <Form onSubmit={formSubmitHandler}>
-            <FloatingLabel label="Email" className="mb-3">
-              <Form.Control type="email" ref={emailInputRef} disabled />
-            </FloatingLabel>
-            <FloatingLabel label="Full Name" className="mb-3">
-              <Form.Control type="text" ref={nameInputRef} />
-            </FloatingLabel>
-            <FloatingLabel label="Profile Photo URL" className="mb-3">
-              <Form.Control type="text" ref={photoInputref} />
-            </FloatingLabel>
-            <div className="d-flex justify-content-center align-items-center">
-              <Button
-                style={{ width: "100vw" }}
-                className="float-end"
-                type="submit"
-                variant="dark"
-              >
-                Update Profile
-              </Button>
-            </div>
-          </Form>
-        </Card.Body>
-      </Card>
     </>
   );
 };
