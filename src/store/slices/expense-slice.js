@@ -11,11 +11,15 @@ const expenseSlice = createSlice({
     replaceExpenses(state, action) {
       state.totalExpenses = action.payload.totalExpenses;
       state.items = action.payload.items;
+      state.isPremium = action.payload.isPremium;
       state.changed = false;
     },
     addExpenses(state, action) {
       state.items.push(action.payload);
       state.totalExpenses = state.totalExpenses + +action.payload.amount;
+      if(state.totalExpenses>=10000){
+        state.isPremium = true;
+      }
       state.changed = true;
     },
     deleteExpense(state, action) {

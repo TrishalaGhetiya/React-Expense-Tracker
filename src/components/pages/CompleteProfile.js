@@ -16,10 +16,13 @@ import {
 import { useEffect } from "react";
 import { useState } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useDispatch } from "react-redux";
+import { authActions } from "../../store/slices/auth-slice";
 
 const CompleteProfile = () => {
   const history = useHistory();
   const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const dispatch = useDispatch();
 
   const nameInputRef = useRef();
   const photoInputref = useRef();
@@ -42,8 +45,10 @@ const CompleteProfile = () => {
         if (data.users[0].emailVerified === true) {
           setIsEmailVerified(true);
         }
-        nameInputRef.current.value = data.users[0].displayName;
-        photoInputref.current.value = data.users[0].photoUrl;
+        if(data.users[0].displayName && data.users[0].photoUrl){
+          nameInputRef.current.value = data.users[0].displayName;
+          photoInputref.current.value = data.users[0].photoUrl;
+        }
         emailInputRef.current.value = data.users[0].email;
       })
       .catch((err) => {
@@ -93,6 +98,8 @@ const CompleteProfile = () => {
       })
       .then((data) => {
         console.log(data);
+        dispatch(authActions.updateProfile(data.displayName));
+        history.replace("/home");
         nameInputRef.current.value = "";
         photoInputref.current.value = "";
       })

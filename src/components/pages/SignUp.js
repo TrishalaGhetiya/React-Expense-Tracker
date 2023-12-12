@@ -50,8 +50,13 @@ const SignUp = () => {
           }
         })
         .then((data) => {
-          console.log(data.displayName);
-          dispatch(authActions.login({token: data.idToken, userName: data.displayName}));
+          console.log(data);
+          dispatch(
+            authActions.login({
+              token: data.idToken,
+              userName: data.displayName,
+            })
+          );
           history.replace("/home");
           toast.success("successfully logged In", {
             position: toast.POSITION.TOP_RIGHT,

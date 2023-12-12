@@ -9,6 +9,7 @@ const Header = () => {
   const dispatch = useDispatch();
 
   const isToken = localStorage.getItem("token");
+  const userName = localStorage.getItem("userName");
 
   const history = useHistory();
 
@@ -16,6 +17,10 @@ const Header = () => {
     dispatch(authActions.logout());
     history.replace("/login");
   };
+
+  const goToComPleteProfileHandler = () => {
+    history.replace("/completeProfile");
+  }
 
   return (
     <header style={{ width: "100%" }}>
@@ -36,7 +41,7 @@ const Header = () => {
               Logout
             </Button>
           )}
-          {isToken && (
+          {isToken && !userName && (
             <div
               className="p-2"
               style={{ backgroundColor: "#ADC4CE", borderRadius: "5px" }}
@@ -44,6 +49,15 @@ const Header = () => {
               Your Profile is Incomplete{" "}
               <a href="/completeProfile">Complete now</a>
             </div>
+          )}
+          {userName && (
+            <Button
+            onClick={goToComPleteProfileHandler}
+              className="p-2"
+              style={{ backgroundColor: "#ADC4CE", border: 0 }}
+            >
+              Profile
+            </Button>
           )}
         </Container>
       </Navbar>

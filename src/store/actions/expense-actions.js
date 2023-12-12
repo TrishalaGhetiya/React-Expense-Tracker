@@ -1,8 +1,9 @@
 import axios from "axios";
 import { replaceExpenses } from "../slices/expense-slice";
 const userName = localStorage.getItem('userName');
+const token = localStorage.getItem('token');
 export const sendExpenses = (expense, userName) => {
-  console.log(userName);
+  
   const finalExpense = {items: expense.items, totalExpenses: expense.totalExpenses}
   return async (dispatch) => {
     const sendRequest = async () => {
@@ -27,6 +28,7 @@ export const getExpenses = () => {
         `https://react-http-ff156-default-rtdb.firebaseio.com/expenses/${userName}.json`
       );
       if (response.statusText !== 'OK') {
+        console.log(response.data);
         throw new Error("Could not fetch expenses");
       }
       return response.data;
